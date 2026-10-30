@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="MathMaturaProject.API/MathMaturaProject.API.csproj" />
+  <Project Path="MathMaturaProject.Data/MathMaturaProject.Data.csproj" Id="db89b168-286b-4924-a07b-7d18641bb6f1" />
 </Solution>
