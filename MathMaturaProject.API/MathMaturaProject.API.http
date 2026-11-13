@@ -4,3 +4,29 @@ GET {{MathMaturaProject.API_HostAddress}}/api/health
 Accept: application/json
 
 ###
+
+### Register. Copy "accessToken" from the reply into @token below.
+POST {{MathMaturaProject.API_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "displayName": "Maria",
+  "password": "parola123"
+}
+
+### Log in
+POST {{MathMaturaProject.API_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "password": "parola123"
+}
+
+### Who am I? Needs the token.
+@token = paste-access-token-here
+GET {{MathMaturaProject.API_HostAddress}}/api/auth/me
+Authorization: Bearer {{token}}
+
+###

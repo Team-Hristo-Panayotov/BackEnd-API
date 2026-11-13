@@ -1,11 +1,13 @@
 ﻿using System.Text.Json;
 using MathMaturaProject.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MathMaturaProject.Data.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -16,8 +18,26 @@ public class AppDbContext : DbContext
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<LessonProgress> LessonProgresses => Set<LessonProgress>();
 
+    // Fixed ids, so the seed data never changes between migrations.
+    public const string UserRoleId = "6f1d1a52-3c55-4b8e-9c55-1f0a5d1b2c01";
+    public const string AdminRoleId = "6f1d1a52-3c55-4b8e-9c55-1f0a5d1b2c02";
+
     protected override void OnModelCreating(ModelBuilder b)
     {
+        // Builds the Identity tables (AspNetUsers, AspNetRoles, ...). Must run first.
+        base.OnModelCreating(b);
+
+        b.Entity<IdentityRole>().HasData(
+            new IdentityRole { Id = UserRoleId, Name = "User", NormalizedName = "USER", ConcurrencyStamp = UserRoleId },
+            new IdentityRole { Id = AdminRoleId, Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = AdminRoleId });
+
+        // Every profile belongs to exactly one login. Deleting the login deletes the profile.
+        b.Entity<UserProfile>()
+            .HasOne<IdentityUser>()
+            .WithOne()
+            .HasForeignKey<UserProfile>(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         b.Entity<Test>(e =>
         {
             e.HasMany(t => t.Questions)
