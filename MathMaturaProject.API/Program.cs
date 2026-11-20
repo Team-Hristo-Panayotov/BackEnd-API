@@ -1,3 +1,4 @@
+using MathMaturaProject.API.Middleware;
 using MathMaturaProject.API.Services;
 using MathMaturaProject.Data.Data;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped<ILessonService, LessonService>();
 
+// Return unhandled exceptions as ProblemDetails JSON
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -16,6 +21,8 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
