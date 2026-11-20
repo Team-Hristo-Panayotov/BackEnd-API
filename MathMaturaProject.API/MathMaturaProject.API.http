@@ -29,4 +29,50 @@ Content-Type: application/json
 GET {{MathMaturaProject.API_HostAddress}}/api/auth/me
 Authorization: Bearer {{token}}
 
+### Lessons
+
+GET {{MathMaturaProject.API_HostAddress}}/api/lessons
+Accept: application/json
+
+###
+
+POST {{MathMaturaProject.API_HostAddress}}/api/lessons
+Content-Type: application/json
+
+{
+  "title": "Linear equations",
+  "section": 0,
+  "content": "Solving ax + b = 0.",
+  "estimatedMinutes": 20,
+  "orderIndex": 1,
+  "prerequisiteLessonIds": [],
+  "isPublished": true
+}
+
+###
+
+@lessonId = 00000000-0000-0000-0000-000000000000
+
+GET {{MathMaturaProject.API_HostAddress}}/api/lessons/{{lessonId}}
+Accept: application/json
+
+###
+
+PUT {{MathMaturaProject.API_HostAddress}}/api/lessons/{{lessonId}}
+Content-Type: application/json
+
+{
+  "title": "Linear equations (updated)",
+  "section": 0,
+  "content": "Solving ax + b = 0, with examples.",
+  "estimatedMinutes": 25,
+  "orderIndex": 1,
+  "prerequisiteLessonIds": [],
+  "isPublished": true
+}
+
+###
+
+DELETE {{MathMaturaProject.API_HostAddress}}/api/lessons/{{lessonId}}
+
 ###

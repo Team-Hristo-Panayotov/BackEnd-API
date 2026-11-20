@@ -1,3 +1,4 @@
+using MathMaturaProject.API.Middleware;
 using MathMaturaProject.API.Services;
 using MathMaturaProject.Data.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,11 +64,20 @@ builder.Services.AddAuthorization();
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
     p.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
+// Add services to the container.
+builder.Services.AddScoped<ILessonService, LessonService>();
+
+// Return unhandled exceptions as ProblemDetails JSON
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
