@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<TestAttempt> TestAttempts => Set<TestAttempt>();
     public DbSet<UserProfile> Profiles => Set<UserProfile>();
+    public DbSet<UserSession> UserSessions => Set<UserSession>();
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<LessonProgress> LessonProgresses => Set<LessonProgress>();
 
@@ -29,7 +30,25 @@ public class AppDbContext : DbContext
         });
 
         b.Entity<TestAttempt>().HasKey(a => a.Id);
-        b.Entity<UserProfile>().HasKey(p => p.UserId);
+        b.Entity<UserProfile>(e =>
+        {
+            e.HasKey(p => p.UserId);
+            // Bounded so it can carry a unique index (nvarchar(max) cannot be indexed).
+            e.Property(p => p.Email).HasMaxLength(256);
+            e.HasIndex(p => p.Email).IsUnique();
+        });
+
+        b.Entity<UserSession>(e =>
+        {
+            e.HasKey(s => s.Id);
+            e.Property(s => s.TokenHash).IsRequired().HasMaxLength(64);
+            e.HasIndex(s => s.TokenHash).IsUnique();
+            e.HasIndex(s => s.UserId);
+            e.HasOne(s => s.User)
+             .WithMany()
+             .HasForeignKey(s => s.UserId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
 
         b.Entity<LessonProgress>()
             .HasIndex(p => new { p.UserId, p.LessonId })

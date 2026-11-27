@@ -5,6 +5,10 @@ public class UserProfile
     public string UserId { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+
+    // Salted hash produced by ASP.NET Core's PasswordHasher. Never returned from the API.
+    public string PasswordHash { get; set; } = string.Empty;
+
     public string? AvatarUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
