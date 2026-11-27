@@ -18,6 +18,8 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<LessonProgress> LessonProgresses => Set<LessonProgress>();
 
+    public DbSet<Feedback> Feedbacks => Set<Feedback>();
+
     // Fixed ids, so the seed data never changes between migrations.
     public const string UserRoleId = "6f1d1a52-3c55-4b8e-9c55-1f0a5d1b2c01";
     public const string AdminRoleId = "6f1d1a52-3c55-4b8e-9c55-1f0a5d1b2c02";
@@ -98,5 +100,22 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
                 v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions?)null)!,
                 prereqComparer)
             .HasColumnType("json");
+
+        b.Entity<Feedback>(e =>
+        {
+            e.Property(f => f.Title)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            e.Property(f => f.Content)
+                .IsRequired()
+                .HasMaxLength(1000);
+
+            // Връзка към потребител (ако решиш да я ползваш)
+            //e.HasOne(f => f.User)
+            //    .WithMany()
+            //    .HasForeignKey(f => f.UserId)
+            //    .OnDelete(DeleteBehavior.SetNull);
+        });
     }
 }
