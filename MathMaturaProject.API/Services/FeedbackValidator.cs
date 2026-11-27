@@ -1,3 +1,5 @@
+using MathMaturaProject.Data.Enums;
+
 namespace MathMaturaProject.API.Services;
 
 /// <summary>
@@ -12,7 +14,8 @@ public static class FeedbackValidator
     public const int ContentMin = 10;
     public const int ContentMax = 1000;
 
-    public static readonly IReadOnlyList<string> Types = ["Problem", "Suggestion"];
+    // Taken from the FeedbackType enum, so the allowed values always match the database.
+    public static readonly IReadOnlyList<string> Types = Enum.GetNames<FeedbackType>();
 
     public static Dictionary<string, List<string>> Validate(string? type, string? title, string? content)
     {
@@ -37,6 +40,10 @@ public static class FeedbackValidator
     /// <summary>Returns the type spelled as stored ("Problem" or "Suggestion"), or null when it is not valid.</summary>
     public static string? NormalizeType(string? type)
         => Types.FirstOrDefault(t => string.Equals(t, type?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>The type as the enum. Call only after Validate found no errors.</summary>
+    public static FeedbackType ParseType(string? type)
+        => Enum.Parse<FeedbackType>(NormalizeType(type) ?? throw new ArgumentException("Not a feedback type.", nameof(type)));
 
     private static void CheckText(string? value, string field, string prefix, int min, int max, Dictionary<string, List<string>> errors)
     {

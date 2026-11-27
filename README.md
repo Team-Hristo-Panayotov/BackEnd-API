@@ -70,6 +70,22 @@ Register and login reply with `{ accessToken, expiresAt, user: { userId, email, 
 | `Jwt:ExpiresMinutes` | 60 | How long a token works. |
 | `Cors:AllowedOrigins` | `http://localhost:5173` in Development | Websites allowed to call the API from a browser. |
 
+## Feedback box
+
+`POST /api/feedback` saves a message from the feedback box. No login is needed. When the request carries a token, the message is linked to that user.
+
+```json
+{ "type": "Problem", "title": "Грешка в урок 3", "content": "Отговорът на задача 5 е грешен." }
+```
+
+| Field | Rule | Error codes |
+|---|---|---|
+| `type` | `Problem` or `Suggestion`, any letter case | `TYPE_REQUIRED`, `TYPE_INVALID` |
+| `title` | 10 to 200 characters | `TITLE_REQUIRED`, `TITLE_TOO_SHORT`, `TITLE_TOO_LONG` |
+| `content` | 10 to 1000 characters | `CONTENT_REQUIRED`, `CONTENT_TOO_SHORT`, `CONTENT_TOO_LONG` |
+
+Spaces at the ends are removed and not counted. Success is `201` with `id`, `type`, `title`, `content` and `createdAt`. Errors are `400 VALIDATION_FAILED`, with the codes grouped by field.
+
 ## Tests
 
 ```bash
