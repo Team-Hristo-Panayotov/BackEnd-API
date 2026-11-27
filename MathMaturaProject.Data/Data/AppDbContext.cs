@@ -100,7 +100,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
                 v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions?)null)!,
                 prereqComparer)
             .HasColumnType("json");
-
+                                         
         b.Entity<Feedback>(e =>
         {
             e.Property(f => f.Title)
